@@ -10,7 +10,7 @@ This toolkit has been designed to provide a thin-layer over some of the common u
 
 ````
 // Throw an error if any of the fields match
-const assert = require('pog-aws/utils/assert');
+const assert = require('pog-aws-sdk/utils/assert');
 
 assert.forMissing( data, 'field1,field2' );
 assert.forMissing( data, ['field1','field2'] );          <-- accepts array-of-strings, or csv of strings
@@ -18,7 +18,7 @@ assert.forEmptyOrNull( data, 'field1,field2' );
 assert.forEmptyOrNullOrMissing( data, 'field1,field2' );
 
 // Change the data for the given method signature
-const clean = require('pog-aws/utils/clean');
+const clean = require('pog-aws-sdk/utils/clean');
 
 clean.forOnlyAZaz09( data, 'field1,field2' );
 clean.forBlankToNull( data, 'field1,field2' );
@@ -34,7 +34,7 @@ as much of the differences as possible.
 ### API
 
 ```
-const sql = require('pog-aws/database/postgres');
+const sql = require('pog-aws-sdk/database/postgres');
 const dbConn = await sql.create( {host ...} );
 await dbConn.initSchema( 'global' );
 
@@ -83,7 +83,7 @@ that is wrong and the reason it failed.  It will auto marshall date objects.
 #### Builder INSERT
 
 ```
-const sql = require('pog-aws/database/postgres');
+const sql = require('pog-aws-sdk/database/postgres');
 const dbConn = await sql.create( pgConnect );
 await dbConn.initSchema( 'global' );
 
@@ -111,7 +111,7 @@ Supporting methods for re-use
 #### Builder UPDATE
 
 ```
-const sql = require('pog-aws/database/postgres');
+const sql = require('pog-aws-sdk/database/postgres');
 const dbConn = await sql.create( pgConnect );
 await dbConn.initSchema( 'global' );
 
@@ -138,7 +138,7 @@ Supporting methods for re-use
 #### Builder SELECT
 
 ```
-const sql = require('pog-aws/database/postgres');
+const sql = require('pog-aws-sdk/database/postgres');
 const dbConn = await sql.create( pgConnect );
 await dbConn.initSchema( 'global' );
 
