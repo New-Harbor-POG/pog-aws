@@ -1,1 +1,9 @@
-node_modules
+node_modules/
+
+.idea/
+
+dist/
+scratch/
+target/
+
+package-lock.json

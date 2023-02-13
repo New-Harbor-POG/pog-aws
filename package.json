@@ -1,0 +1,37 @@
+{
+  "name": "pog-aws",
+  "version": "1.0.0",
+  "description": "NHC POG bootstrap utility libraries for turbo charging AWS Lambda development",
+  "main": "index.js",
+  "scripts": {
+      "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+      "type": "git",
+      "url": ""
+  },
+  "author": "NHC POG",
+  "license": "ISC",
+  "dependencies": {
+      "@aws-sdk/client-s3": "3.211.0",
+      "@aws-sdk/client-ses": "3.212.0",
+      "@aws-sdk/client-sqs": "^3.267.0",
+      "@aws-sdk/client-ssm": "3.211.0",
+      "@aws-sdk/credential-providers": "3.211.0",
+      "@aws-sdk/s3-request-presigner": "3.213.0",
+      "body-parser": "^1.20.1",
+      "cors": "^2.8.5",
+      "express": "^4.18.2",
+      "http-errors": "^2.0.0",
+      "lodash": "^4.17.21",
+      "mustache": "^4.2.0",
+      "mysql2": "^3.1.0",
+      "pg": "^8.9.0",
+      "readline": "^1.3.0",
+      "serverless-http": "^3.1.1"
+    },
+    "devDependencies": {
+      "semistandard": "^16.0.1",
+      "serverless-better-credentials": "^1.1.3"
+  }
+}
