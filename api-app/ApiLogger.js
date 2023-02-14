@@ -1,9 +1,3 @@
-const enabled = 'APILOGGER_SQS_URL' in process.env;
-
-if (enabled) {
-  const SQS = new(require('../sqs'))(process.env.APILOGGER_SQS_URL);
-}
-
 module.exports = {
 
   capture: function (request, event) {
@@ -42,7 +36,7 @@ module.exports = {
 
   // ----------------------------------------
 
-  store: async function (response, context) {
+  store: async function (response, context, doLogSessionFn) {
     if (!('logItem' in context) || context.logItem == null || ('donotlog' in response)) {
       return;
     }
@@ -57,12 +51,12 @@ module.exports = {
       len: response.getHeader('content-length') ? Number(response.getHeader('content-length')) : 0
     };
 
-    if (('donotlog' in context || !enabled)) { // this is for the local runner to make sure we don't try to log and if the APILOGGER_SQS_URL not defined
+    if (('donotlog' in context)) { // this is for the local runner to make sure we don't try to log
       return;
     }
 
     try {
-      await SQS.send(context.logItem);
+      await doLogSessionFn(response, context, context.logItem);
     } catch (e) {
       console.error(e);
       console.error(`context.logItem=${JSON.stringify(context.logItem)}`);
@@ -74,19 +68,19 @@ module.exports = {
 /** ---------------------------------------------------
  * Remove any sensitive data from the body
  */
-function getBodySanitized(contentType, rawBody) {
+function getBodySanitized (contentType, rawBody) {
   if (contentType.includes('json')) {
     try {
-      const jobj = JSON.parse(rawBody);
-      if ('password' in jobj && jobj.password.length > 0) {
-        jobj.password = `---[ length=${jobj.password.length}; lastChar=${jobj.password.charAt(jobj.password.length - 1)} ]---`;
+      const jsonObject = JSON.parse(rawBody);
+      if ('password' in jsonObject && jsonObject.password.length > 0) {
+        jsonObject.password = `---[ length=${jsonObject.password.length}; lastChar=${jsonObject.password.charAt(jsonObject.password.length - 1)} ]---`;
       }
 
-      if ('dataUri' in jobj) {
-        jobj.dataUri = '---[ binary data base64 ]---';
+      if ('dataUri' in jsonObject) {
+        jsonObject.dataUri = '---[ binary data base64 ]---';
       }
 
-      return JSON.stringify(jobj);
+      return JSON.stringify(jsonObject);
     } catch (e) {
       return JSON.stringify({
         formData: rawBody

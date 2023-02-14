@@ -1,7 +1,11 @@
 /**
  * Base handler for the API App.
  *
- * the config accepts handles to callbacks; doPreRequest(request, event, context) / doPostResponse(response, event, context)
+ * the config accepts handles to callbacks;
+ *
+ *  async doPreRequest(request, event, context)
+ *  async doPostResponse(response, event, context)
+ *  async doLogSession(response, context, logItem)
  *
  */
 
@@ -82,7 +86,9 @@ module.exports = class BaseApiExpressApp extends require('../app/ClassBaseApp') 
         await this.config.doPostResponse(response, event, context);
       }
 
-      await apiLogger.store(response, context);
+      if ('doLogSession' in this.config) {
+        await apiLogger.store(response, context, this.config.doLogSession);
+      }
     } catch (e) {
       console.error(e);
     } finally {
