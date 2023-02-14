@@ -24,7 +24,7 @@ module.exports = class ClassSSM {
 
     let v = this.paramCache.getItem(param);
     if (v == null) {
-      v = await this.fetchNoCache(param, decodeFromJson);
+      v = await this.getNoCache(param, decodeFromJson);
       this.paramCache.setItem(param, v);
     }
     return v;
@@ -47,7 +47,7 @@ module.exports = class ClassSSM {
         WithDecryption: true
       });
     } catch (e) {
-      console.error(`fetchNoCache(${paramName}); ${e}`);
+      console.error(`getNoCache(${paramName}); ${e}`);
       return null;
     }
 
