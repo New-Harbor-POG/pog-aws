@@ -9,11 +9,11 @@ module.exports = class MySQL {
     // create the connection to MySQL
     // https://github.com/mysqljs/mysql#connection-options
     this.db = await mysql.createConnection({
-      host: param['db-ro'].host,
-      port: Number(param['db-ro'].port),
-      user: param['db-ro'].username,
-      password: param['db-ro'].password,
-      database: param['db-ro'].database
+      host: param.host,
+      port: Number(param.port),
+      user: param.username,
+      password: param.password,
+      database: param.database
     });
   }
 
