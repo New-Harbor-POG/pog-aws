@@ -4,7 +4,56 @@ This toolkit has been designed to provide a thin-layer over some of the common u
 
 ## API APP
 
-```process.env.APILOGGER_SQS_URL``` defines the SQS url to which the log entries will be logged too.
+### API Lambda
+
+You can obtain the handle to an API Lambda, and then provide functionality for various stages of the workflow.
+
+```
+const app = require('pog-aws-sdk/api-app');
+
+app.setCallback({
+
+  doPreRequest: async function (request, event, context) {
+  },
+
+  doPostResponse: async function (response, event, context) {
+  },
+
+  doLogSession: async function (request, event, logItem) {
+  }
+
+});
+```
+
+A sample layout:
+
+```
+const app = require('pog-aws-sdk/api-app');
+
+require('./route-get-time').do(app);
+
+module.exports.do = async (event, context) => {
+  const r = await app.getHandler()(event, context);
+  return r;
+};
+```
+
+Then a typical endpoint would like:
+
+```
+module.exports.do = (app) => {
+  app.get('*/time', async function (req, res) {
+    try {
+      res.send({
+        now: new Date(),
+        time: new Date().getTime()
+      });
+    } catch (e) {
+      app.onError(res, e, req);
+    }
+  });
+};
+```
 
 ## Utilis
 
