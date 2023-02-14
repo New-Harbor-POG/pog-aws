@@ -73,7 +73,7 @@ module.exports = class BaseApiExpressApp extends require('../app/ClassBaseApp') 
     context.appContext.ip = request.ip = request.ip.split(',')[0].trim();
     context.appContext.userAgent = request.userAgent = event.headers['User-Agent'];
 
-    context.apiLogger = apiLogger.capture(request, event);
+    context.logItem = apiLogger.capture(request, event);
 
     if ('doPreRequest' in this.config) {
       await this.config.doPreRequest(request, context, event);
