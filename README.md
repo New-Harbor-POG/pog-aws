@@ -57,7 +57,7 @@ module.exports.do = (app) => {
 
 ## Utilis
 
-````
+```
 // Throw an error if any of the fields match
 const assert = require('pog-aws-sdk/utils/assert');
 
