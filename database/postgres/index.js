@@ -20,6 +20,7 @@ const oidDef = {};
 module.exports = class Postgres extends require('./WrapBase') {
   async create (param, schema) {
     this.pgClient = new Client(param);
+    await this.pgClient.connect();
 
     this.logStat = false;
   }
