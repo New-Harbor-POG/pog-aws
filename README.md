@@ -83,7 +83,7 @@ as much of the differences as possible.
 ### API
 
 ```
-const sql = require('pog-aws-sdk/database/postgres');
+const sql = new (require('pog-aws-sdk/database/postgres'))();
 const dbConn = await sql.create( {host ...} );
 await dbConn.initSchema( 'global' );
 
@@ -132,7 +132,7 @@ that is wrong and the reason it failed.  It will auto marshall date objects.
 #### Builder INSERT
 
 ```
-const sql = require('pog-aws-sdk/database/postgres');
+const sql = new (require('pog-aws-sdk/database/postgres'))();
 const dbConn = await sql.create( pgConnect );
 await dbConn.initSchema( 'global' );
 
@@ -160,7 +160,7 @@ Supporting methods for re-use
 #### Builder UPDATE
 
 ```
-const sql = require('pog-aws-sdk/database/postgres');
+const sql = new (require('pog-aws-sdk/database/postgres'))();
 const dbConn = await sql.create( pgConnect );
 await dbConn.initSchema( 'global' );
 
@@ -187,7 +187,7 @@ Supporting methods for re-use
 #### Builder SELECT
 
 ```
-const sql = require('pog-aws-sdk/database/postgres');
+const sql = new (require('pog-aws-sdk/database/postgres'))();
 const dbConn = await sql.create( pgConnect );
 await dbConn.initSchema( 'global' );
 
