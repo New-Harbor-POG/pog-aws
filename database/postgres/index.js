@@ -3,11 +3,23 @@ const { Client } = require('pg');
 const schemaDef = {};
 const oidDef = {};
 
+/**
+ *
+ * https://node-postgres.com/features/connecting
+ *
+ *
+ * {
+  user: 'dbuser',
+  host: 'database.server.com',
+  database: 'mydb',
+  password: 'secretpassword',
+  port: 3211,
+ }
+ *
+ */
 module.exports = class Postgres extends require('./WrapBase') {
   async create (param, schema) {
-    this.pgClient = new Client({
-      connectionString: param
-    });
+    this.pgClient = new Client(param);
 
     this.logStat = false;
   }
