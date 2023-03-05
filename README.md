@@ -1,6 +1,95 @@
 ## POG AWS Toolkit
 
-This toolkit has been designed to provide a thin-layer over some of the common use patterns of AWS Lambda.
+This toolkit has been designed to provide a thin-layer over some of the common use patterns of AWS services (S3, SQS, SES, SSM, Lambda).
+
+## SSM
+
+```
+const SSM = require('pog-aws-sdk/sqs');
+const ssm = new SSM();
+
+const value = await ssm.get(param, decodeFromJson = true);
+const value2 = await ssm.getNoCache(param, decodeFromJson = true);  // will catch for 15mins
+```
+
+## SQS
+
+```
+const SQS = require('pog-aws-sdk/sqs');
+
+const queue = new SQS('http://queueUrl');
+
+await queue.send(data, delaySeconds = 0, metaData = null);
+await queue.sendBatch(dataArray, delaySeconds = 0, metaData = null);
+```
+
+If data is a non-string, it will be converted to a string (via JSON.stringify()) before placing onto the queue.
+
+The sendBatch() will accept as many items in the data array, and will page them to AWS 10 at a time.
+
+## SES
+
+You can easily send out email
+
+```
+const ses = require('pog-aws-sdk/ses');
+
+ses.sendHtmlText( 'from@email', 'to@email', 'Subject', 'HTML Body to send', 'text body version' [, {dropIn: value}]  );
+ses.sendHtml( 'from@email', 'to@email', 'Subject', 'Body to send' [, {dropIn: value}]  );
+```
+
+The dropIns uses the Mustache template system and will run it against both 'subject' and 'body'.
+
+The toEmail can be a single string, or an array of emails.
+
+Both methods return an object with the fully qualified body/subject and messageId for logging purposes
+
+```
+{
+  toEmail
+  fromEmail
+  subject
+  htmlBody
+  textBody
+  messageId
+}
+```
+
+### Email
+
+Email that is coming from SES can be parsed and managed easily using:
+
+```
+const email = require('pog-aws-sdk/ses/email');
+
+const inEmail = await email.getFromS3(s3Bucket, s3Key);
+console.log( inEmail.getSubject() );
+
+// or
+
+const inEmail = await email.getFromText(mailContentString);
+console.log( inEmail.getSubject() );
+```
+
+## S3
+
+```
+const s3 = require('pog-aws-sdk/s3');
+
+const files = await s3.list(s3Bucket [, '/start']); // will list ALL objects; [{key, size, etag, lastModified}]
+
+await s3.move(s3Bucket, oldKey, newKey);
+
+await s3.delete(s3Bucket, key);
+
+await s3.put(s3Bucket, s3Key, fileBody, contentType = null, tagging = null);
+await s3.putFile(s3Bucket, s3Key, filePath, contentType = null, tagging = null);
+
+const fileBody = await s3.getAsBytes(s3Bucket, s3Key);
+const fileBody = await s3.getAsString(s3Bucket, s3Key);
+
+const signedUrl = await s3.generateSignedUrl(s3Bucket, s3Key, fileName, expiresInSecs);
+```
 
 ## API APP
 
@@ -55,7 +144,7 @@ module.exports.do = (app) => {
 };
 ```
 
-## Utilis
+## Utils
 
 ```
 // Throw an error if any of the fields match
@@ -314,5 +403,8 @@ Prepared paremeters are marked using ?
 
 ## Release
 
+* 2023-03-05:
+  * Added in SES helpers
+  * Added in S3 helpers
 * 2023-02-14:
   * Initial release
