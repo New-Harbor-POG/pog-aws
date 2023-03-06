@@ -9,7 +9,7 @@ const SSM = require('pog-aws-sdk/sqs');
 const ssm = new SSM();
 
 const value = await ssm.get(param, decodeFromJson = true);
-const value2 = await ssm.getNoCache(param, decodeFromJson = true);  // will catch for 15mins
+const value2 = await ssm.getNoCache(param, decodeFromJson = true);  // will cache for 15mins
 ```
 
 ## SQS
