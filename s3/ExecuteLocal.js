@@ -32,15 +32,7 @@ module.exports = new ExecuteLocal();
 
 function initEvent (message = null) {
   const event = Object.assign({}, baseEvent);
-
-  if (message != null) {
-    if (typeof message === 'string') {
-      event.Records[0].body = message;
-    } else {
-      event.Records[0].body = JSON.stringify(message);
-    }
-  }
-
+  event.Records[0] = message;
   return event;
 }
 
@@ -50,7 +42,7 @@ const baseEvent = {
       s3SchemaVersion: '1.0',
       configurationId: 's3-email-file-c007d9d32c9b849419d8be72a20af959',
       bucket: {
-        name: 'ses-warehouse.escalon.cloud',
+        name: 'XXX-BUCKET.cloud',
         ownerIdentity: { principalId: 'A11433A98UGHCJ' },
         arn: 'arn:aws:s3:::XXX-BUCKET'
       },
