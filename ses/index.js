@@ -5,7 +5,10 @@
  * https://docs.aws.amazon.com/sdk-for-javascript/v3/developer-guide/ses-examples-sending-email.html
  */
 
-const { SESClient, SendEmailCommand } = require('@aws-sdk/client-ses');
+const {
+  SESClient,
+  SendEmailCommand
+} = require('@aws-sdk/client-ses');
 const Mustache = require('mustache');
 
 module.exports = {
@@ -26,7 +29,6 @@ module.exports = {
 
     if (dropIns != null && typeof dropIns === 'object') {
       htmlBody = Mustache.render(htmlBody, dropIns);
-      textBody = Mustache.render(textBody, dropIns);
       subject = Mustache.render(subject, dropIns);
     }
 
