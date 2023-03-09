@@ -1,8 +1,8 @@
 /**
  *
- * A means to execute the local SQS handler
+ * A means to execute the local S3 handler
 
-  const executor = require('pog-aws/sqs/ExecuteLocal');
+  const executor = require('pog-aws/s3/ExecuteLocal');
   executor.setHandler(require('../src-node/endpoints/utils/_lambda'));
   const res = await executor.doMessage('/time');
  *
@@ -47,20 +47,19 @@ function initEvent (message = null) {
 const baseEvent = {
   Records: [
     {
-      messageId: '19dd0b57-b21e-4ac1-bd88-01bbb068cb78',
-      receiptHandle: 'MessageReceiptHandle',
-      body: '',
-      attributes: {
-        ApproximateReceiveCount: '1',
-        SentTimestamp: '1523232000000',
-        SenderId: '123456789012',
-        ApproximateFirstReceiveTimestamp: '1523232000001'
+      s3SchemaVersion: '1.0',
+      configurationId: 's3-email-file-c007d9d32c9b849419d8be72a20af959',
+      bucket: {
+        name: 'ses-warehouse.escalon.cloud',
+        ownerIdentity: { principalId: 'A11433A98UGHCJ' },
+        arn: 'arn:aws:s3:::XXX-BUCKET'
       },
-      messageAttributes: {},
-      md5OfBody: '{{{md5_of_body}}}',
-      eventSource: 'aws:sqs',
-      eventSourceARN: 'arn:aws:sqs:us-east-1:123456789012:MyQueue',
-      awsRegion: 'us-east-1'
+      object: {
+        key: 'pending/i7rvt6vtmqv5q1n1749rfv5didpch031ab9k0vg1',
+        size: 11664,
+        eTag: '8eb174f8bb1afec54439700509fa0fa3',
+        sequencer: '00640A06B2462654C1'
+      }
     }
   ]
 }

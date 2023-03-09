@@ -399,10 +399,12 @@ Each statement is treated as a Mustache template, and you can pass in replaces u
 
 Given the way Postgresql works with aliasing, this library, for all ```.select/.select1``` calls, will convert the columns return in the rows with a full aliased name (```<table>.<column>```).
 
-Prepared paremeters are marked using ?
+Prepared parameters are marked using ?
 
 ## Release
 
+* 2023-03-09:
+  * Added in Local runner for S3
 * 2023-03-05:
   * Added in SES helpers
   * Added in S3 helpers
