@@ -22,7 +22,7 @@ class ExecuteLocal {
   async doMessage (message) {
     const event = initEvent(message);
     this.context = {};
-    await this.handler.onEvent(event, this.context);
+    await this.handler.onEvent(event, this.context, function () {});
   }
 }
 
@@ -32,18 +32,20 @@ module.exports = new ExecuteLocal();
 
 function initEvent (message = null) {
   const event = Object.assign({}, baseEvent);
-  event.Records[0] = message;
+  event.Records[0].s3 = message;
   return event;
 }
 
 const baseEvent = {
-  Records: [
-    {
+  Records: [{
+    s3: {
       s3SchemaVersion: '1.0',
       configurationId: 's3-email-file-c007d9d32c9b849419d8be72a20af959',
       bucket: {
         name: 'XXX-BUCKET.cloud',
-        ownerIdentity: { principalId: 'A11433A98UGHCJ' },
+        ownerIdentity: {
+          principalId: 'A11433A98UGHCJ'
+        },
         arn: 'arn:aws:s3:::XXX-BUCKET'
       },
       object: {
@@ -53,6 +55,6 @@ const baseEvent = {
         sequencer: '00640A06B2462654C1'
       }
     }
+  }
   ]
-}
-;
+};
