@@ -40,7 +40,7 @@ class DynamoDB {
       Key: {}
     };
 
-    params.Item[this.idName] = id;
+    params.Key[this.idName] = id;
 
     const data = await this.ddbClient.send(new GetCommand(params));
     return 'Item' in data ? data.Item : null;
@@ -52,7 +52,7 @@ class DynamoDB {
       Key: {}
     };
 
-    params.Item[this.idName] = id;
+    params.Key[this.idName] = id;
 
     const data = await this.ddbClient.send(new DeleteCommand(params));
     return data;
