@@ -1,6 +1,6 @@
 ## POG AWS Toolkit
 
-This toolkit has been designed to provide a thin-layer over some of the common use patterns of AWS services (S3, SQS, SES, SSM, Lambda).
+This toolkit has been designed to provide a thin-layer over some of the common use patterns of AWS services (S3, SQS, SES, SSM, DynamoDB Lambda).
 
 ## SSM
 
@@ -10,6 +10,25 @@ const ssm = new SSM();
 
 const value = await ssm.get(param, decodeFromJson = true);
 const value2 = await ssm.getNoCache(param, decodeFromJson = true);  // will cache for 15mins
+```
+
+## DynamoDB
+
+```
+const DynamoDB = require('pog-aws-sdk/dynamodb');
+
+// name of the PrimaryKey field; name of the TTL field (defaults to id/expire)
+const o = new DynamoDB('tableName', 'id', 'expire' );  
+
+// Basic Item
+const a = await o.putItem('321312', {some:'data'} );
+
+// Basic Item with an expiration expressed in seconds
+const b = await o.putItem('321312', {some:'data'}, 3600 );
+
+const c = await o.getItem('321312');
+
+await o.deleteItem('321312');
 ```
 
 ## SQS
