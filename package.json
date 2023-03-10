@@ -1,6 +1,6 @@
 {
   "name": "pog-aws-sdk",
-  "version": "1.0.14",
+  "version": "1.0.15",
   "description": "NHC POG bootstrap utility libraries for turbo charging AWS Lambda development",
   "main": "index.js",
   "repository": {
@@ -37,8 +37,5 @@
   "bugs": {
     "url": "https://github.com/New-Harbor-POG/pog-aws/issues"
   },
-  "homepage": "https://github.com/New-Harbor-POG/pog-aws#readme",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  }
+  "homepage": "https://github.com/New-Harbor-POG/pog-aws#readme"
 }
