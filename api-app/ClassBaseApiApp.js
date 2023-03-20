@@ -83,7 +83,7 @@ module.exports = class BaseApiExpressApp extends require('../app/ClassBaseApp') 
   async doPostResponse (response, event, context) {
     try {
       if ('doPostResponse' in this.config) {
-        await this.config.doPostResponse(response, event, context);
+        await this.config.doPostResponse();
       }
 
       if ('doLogSession' in this.config) {

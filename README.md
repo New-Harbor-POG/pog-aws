@@ -121,13 +121,13 @@ const app = require('pog-aws-sdk/api-app');
 
 app.setCallback({
 
-  doPreRequest: async function (request, event, context) {
+  doPreRequest: async function (request, context, event) {
   },
 
   doPostResponse: async function (response, event, context) {
   },
 
-  doLogSession: async function (request, event, logItem) {
+  doLogSession: async function (request, context, logItem) {
   }
 
 });

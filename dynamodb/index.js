@@ -41,7 +41,7 @@ class DynamoDB {
 
     params.Key[this.idName] = id;
     const data = await this.ddbClient.send(new GetCommand(params));
-    return 'Item' in data ? data.Item : null;
+    return 'Item' in data && typeof data.Item !== 'undefined' ? data.Item : null;
   }
 
   async deleteItem (id) {
