@@ -5,7 +5,7 @@ This toolkit has been designed to provide a thin-layer over some of the common u
 ## SSM
 
 ```
-const SSM = require('pog-aws-sdk/sqs');
+const SSM = require('pog-aws-sdk/ssm');
 const ssm = new SSM();
 
 const value = await ssm.get(param, decodeFromJson = true);
