@@ -191,6 +191,27 @@ as much of the differences as possible.
 ### API
 
 ```
+{
+	"db-ro": {
+		"type": "postgres",
+		"user": "",
+		"host": "",
+		"database": "",
+		"password": "",
+		"port": 5432
+	},
+	"db-rw": {
+		"type": "postgres",
+		"user": "",
+		"host": "",
+		"database": "",
+		"password": "",
+		"port": 5432
+	}
+}
+```
+
+```
 const sql = new (require('pog-aws-sdk/database/postgres'))();
 const dbConn = await sql.create( {host ...} );
 await dbConn.initSchema( 'global' );
