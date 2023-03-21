@@ -83,7 +83,7 @@ module.exports = class Postgres extends require('./WrapBase') {
     delete oidDef[this.pgClient.database];
   }
 
-  async end () {
+  async destroy () {
     await this.pgClient.end();
   }
 
