@@ -198,7 +198,8 @@ as much of the differences as possible.
 		"host": "",
 		"database": "",
 		"password": "",
-		"port": 5432
+		"port": 5432,
+    "schema": "schema1,schema2"
 	},
 	"db-rw": {
 		"type": "postgres",

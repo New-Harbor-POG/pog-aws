@@ -36,6 +36,12 @@ module.exports = class MySQL {
     return rows.length > 0 ? rows[0] : [];
   }
 
+  async select1 (sql, values) {
+    this.lastSQL = sql;
+    const rows = await this.db.query(sql, values);
+    return rows.length > 0 && rows[0].length > 0 ? rows[0][0] : null;
+  }
+
   async selectOneRow (sql, values) {
     this.lastSQL = sql;
     const rows = await this.db.query(sql, values);
