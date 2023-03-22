@@ -3,13 +3,12 @@
  */
 
 const app = require('../../app');
-const { _ } = require('lodash');
 
 module.exports.onEvent = async (event, context) => {
   const appContext = app.getAppContext();
 
   try {
-    if (_.has(event, 'Records') && !_.isEmpty(event.Records)) {
+    if ('Records' in event && event.Records.length > 0) {
       for (const record of event.Records) {
         console.log(record.body);
       }

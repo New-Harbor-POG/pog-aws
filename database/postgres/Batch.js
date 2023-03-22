@@ -5,7 +5,7 @@
  */
 
 const fs = require('fs');
-const readline = require('readline');
+const readline = require('./readline');
 const Mustache = require('mustache');
 
 module.exports.execute = async function (dbConn, filename, options) {
