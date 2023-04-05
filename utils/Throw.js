@@ -4,6 +4,18 @@
 
 module.exports = {
 
+  throw: function (code, message) {
+    const e = new Error(message);
+    e.statusCode = code;
+    throw e;
+  },
+
+  notAuthorized: function (message) {
+    const e = new Error(message);
+    e.statusCode = 401;
+    throw e;
+  },
+
   badRequest: function (message) {
     const e = new Error(message);
     e.statusCode = 400;

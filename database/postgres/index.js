@@ -14,11 +14,12 @@ const oidDef = {};
   database: 'mydb',
   password: 'secretpassword',
   port: 3211,
+  schema: 'xxx,bbb'
  }
  *
  */
 module.exports = class Postgres extends require('./WrapBase') {
-  async create (param, schema) {
+  async create (param) {
     this.pgClient = new Client(param);
     await this.pgClient.connect();
 
