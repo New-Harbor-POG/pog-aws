@@ -8,6 +8,9 @@
   const res = await executor.doGet('/time');
  *
  */
+
+const jwt = require('jsonwebtoken');
+
 process.env.ENV = 'ENV' in process.env ? process.env.ENV : 'dev';
 
 // ----------------
@@ -20,6 +23,13 @@ class ClassExecuteLocal {
 
   getContext () {
     return 'context' in this ? this.context : {};
+  }
+
+  setToken (token) {
+    const jwtPayload = jwt.verify(token, process.env.JWT_SECRET);
+    delete jwtPayload.iat;
+    delete jwtPayload.exp;
+    this.payload = jwtPayload;
   }
 
   setJWTPayload (payload) {
@@ -76,7 +86,7 @@ class ClassExecuteLocal {
   }
 }
 
-module.exports = new ClassExecuteLocal();
+module.exports = ClassExecuteLocal;
 
 // ----------------
 

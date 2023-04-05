@@ -1,6 +1,6 @@
 {
   "name": "pog-aws-sdk",
-  "version": "1.0.22",
+  "version": "1.0.23",
   "description": "NHC POG bootstrap utility libraries for turbo charging AWS Lambda development",
   "main": "index.js",
   "repository": {
@@ -14,6 +14,7 @@
     "cors": "^2.8.5",
     "express": "^4.18.2",
     "http-errors": "^2.0.0",
+    "jsonwebtoken": "9.0.0",
     "mailparser": "^3.6.4",
     "mustache": "^4.2.0",
     "mysql2": "^3.1.0",
