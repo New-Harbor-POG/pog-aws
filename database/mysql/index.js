@@ -20,7 +20,11 @@ module.exports = class MySQL {
   // ----
 
   async destroy () {
-    await this.db.destroy();
+    try {
+      await this.db.destroy();
+    } catch (e) {
+      console.error(`[mysql.destroy()] ${e}`);
+    }
   }
 
   async query (sql, values) {

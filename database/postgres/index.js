@@ -89,7 +89,11 @@ module.exports = class Postgres extends require('./WrapBase') {
   }
 
   async destroy () {
-    await this.pgClient.end();
+    try {
+      await this.pgClient.end();
+    } catch (e) {
+      console.error(`[postgres.destroy()] ${e}`);
+    }
   }
 
   // ----------------------
