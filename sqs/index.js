@@ -41,14 +41,14 @@ class SQS {
 
       // Look to send the batch
       if (batch.length === 10) {
-        batch.length = 0;
-
         const s = await this._sendBatchRequestEntry(sqsClient, batch);
         if ('Successful' in s) {
           for (const m of s.Successful) {
             batchId.push(m.MessageId);
           }
         }
+
+        batch.length = 0;
       }
     }
 

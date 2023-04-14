@@ -444,6 +444,8 @@ Prepared parameters are marked using ?
 
 ## Release
 
+* 2023-04-14:
+  * Fixed batch sending on SQS
 * 2023-03-09:
   * Added in Local runner for S3
 * 2023-03-05:
