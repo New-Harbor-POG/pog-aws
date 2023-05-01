@@ -26,9 +26,32 @@ const a = await o.putItem('321312', {some:'data'} );
 // Basic Item with an expiration expressed in seconds
 const b = await o.putItem('321312', {some:'data'}, 3600 );
 
+// Get an item
 const c = await o.getItem('321312');
 
+// Get a list of items
+const d = await o.getItems(['321312','123']);
+
+// Delete an item
 await o.deleteItem('321312');
+
+// Delete a list of items
+await o.deleteItems(['321312','123']);
+
+// Put a number of items
+await o.putItems( [
+  {
+    id: 21,
+    data: '123'
+  },{
+    id: 32,
+    data: '456'
+  }
+]);
+
+// Query
+// https://docs.aws.amazon.com/sdk-for-javascript/v3/developer-guide/dynamodb-example-query-scan.html
+const e = await o.queryItems( { } );
 ```
 
 ## SQS
@@ -444,6 +467,8 @@ Prepared parameters are marked using ?
 
 ## Release
 
+* 2023-05-01:
+  * Added DynamoDB methods
 * 2023-04-14:
   * Fixed batch sending on SQS
 * 2023-03-09:
