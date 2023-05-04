@@ -134,6 +134,8 @@ module.exports = class SqlSelectBuilder extends require('./Builder') {
               joinType = 'LEFT OUTER JOIN';
             } else if (jj.type.toLowerCase() === 'right') {
               joinType = 'RIGHT JOIN';
+            } else if (jj.type.toLowerCase() === 'left') {
+              joinType = 'LEFT JOIN';
             } else if (jj.type.toLowerCase() === 'right outer') {
               joinType = 'RIGHT OUTER JOIN';
             } else if (jj.type.toLowerCase() === 'inner') {
@@ -191,7 +193,7 @@ module.exports = class SqlSelectBuilder extends require('./Builder') {
   /**
    * Support for building from dataTables.net
    */
-  dataTable (query, maxItems) {
+  dataTable (query, maxItems = 50) {
     if (typeof query === 'undefined') {
       return this;
     }
