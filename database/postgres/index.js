@@ -23,7 +23,7 @@ module.exports = class Postgres extends require('./WrapBase') {
     this.pgClient = new Client(param);
     await this.pgClient.connect();
 
-    if ('schema' in param) {
+    if (typeof param === 'object' && 'schema' in param) {
       await this.initSchema(param.schema);
     }
 
