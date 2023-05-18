@@ -403,10 +403,7 @@ function transformSelectResult (rows, filterNull = false, filterErantPeriod = fa
   if (filterNull || filterErantPeriod || filterKeys != null) {
     for (const row of rows) {
       for (const col in row) {
-        if (filterNull && row[col] == null) {
-          delete row[col];
-          continue;
-        } else if (filterKeys && col in filterKeys) {
+        if ((filterNull && row[col] == null) || (filterKeys && col in filterKeys)) {
           delete row[col];
           continue;
         } else if (filterErantPeriod && col.charAt(0) === '.') {
