@@ -31,18 +31,21 @@ module.exports = class AppContext {
     }
 
     // Create the necessary driver
-    const paramKey = readOnly ? 'db-ro' : 'db-rw';
+    const config = getDbParam(readOnly, param);
+    if (config === null) {
+      return require('../utils/Throw').fatal(`SSM Parameter for ${profile} not defined (dbRO, db-ro, db_ro, dbRW, db-rw, db_rw)`);
+    }
 
-    if ('type' in param[paramKey] && param[paramKey].type.toLowerCase() === 'mysql') {
+    if ('type' in config && config.type.toLowerCase() === 'mysql') {
       this[propKey] = new (require('../database/mysql'))();
-      await this[propKey].create(param[paramKey]);
+      await this[propKey].create(config);
       return this[propKey];
-    } else if ('type' in param[paramKey] && param[paramKey].type.toLowerCase() === 'postgres') {
+    } else if ('type' in config && config.type.toLowerCase() === 'postgres') {
       this[propKey] = new (require('../database/postgres'))();
-      await this[propKey].create(param[paramKey]);
+      await this[propKey].create(config);
       return this[propKey];
     } else {
-      return require('../utils/Throw').fatal(`SSM Parameter for ${param[paramKey].type} not defined or supported`);
+      return require('../utils/Throw').fatal(`SSM Parameter for ${config.type} not defined or supported`);
     }
   }
 
@@ -59,3 +62,25 @@ module.exports = class AppContext {
   }
 }
 ;
+
+function getDbParam (readOnly, param) {
+  if (readOnly) {
+    if ('db-ro' in param) {
+      return param['db-ro'];
+    } else if ('db_ro' in param) {
+      return param.db_ro;
+    } else if ('dbRO' in param) {
+      return param.dbRO;
+    }
+  } else {
+    if ('db-rw' in param) {
+      return param['db-rw'];
+    } else if ('db_rw' in param) {
+      return param.db_rw;
+    } else if ('dbRW' in param) {
+      return param.dbRW;
+    }
+  }
+
+  return null;
+}

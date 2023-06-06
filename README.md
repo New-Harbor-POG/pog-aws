@@ -213,6 +213,8 @@ as much of the differences as possible.
 
 ### API
 
+Keys supported included: dbRO, db-ro, db_ro, dbRW, db-rw, db_rw depending on your naming convention.
+
 ```
 {
 	"db-ro": {
@@ -467,6 +469,8 @@ Prepared parameters are marked using ?
 
 ## Release
 
+* 2023-06-06:
+  * Updated DB params
 * 2023-05-01:
   * Added DynamoDB methods
 * 2023-04-14:
