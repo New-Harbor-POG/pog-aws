@@ -113,6 +113,10 @@ function initEvent (httpMethod, url, queryParams, headers) {
   event.requestContext.requestTimeEpoch = new Date().getTime();
   event.headers = Object.assign({}, event.headers, headers);
 
+  for (const key in headers) {
+    event.multiValueHeaders[key] = [headers[key]];
+  }
+
   return event;
 }
 
