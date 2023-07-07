@@ -18,6 +18,7 @@ process.env.ENV = 'ENV' in process.env ? process.env.ENV : 'dev';
 class ClassExecuteLocal {
   setHandler (handler) {
     this.handler = handler;
+    this.headers = {};
     return this;
   }
 
@@ -30,14 +31,27 @@ class ClassExecuteLocal {
     delete jwtPayload.iat;
     delete jwtPayload.exp;
     this.payload = jwtPayload;
+    return this;
   }
 
   setJWTPayload (payload) {
     this.payload = payload;
+    return this;
   }
 
   clearAuth () {
     delete this.payload;
+    return this;
+  }
+
+  clearHeaders () {
+    this.headers = {};
+    return this;
+  }
+
+  setHeaders (headers) {
+    this.headers = headers;
+    return this;
   }
 
   // ----------------
@@ -65,7 +79,7 @@ class ClassExecuteLocal {
   // -------------------
 
   async doBody (httpMethod, url, body, queryParams = {}) {
-    const event = initEvent(httpMethod, url, queryParams);
+    const event = initEvent(httpMethod, url, queryParams, this.headers);
 
     event.body = body != null ? JSON.stringify(body) : {};
 
@@ -90,14 +104,14 @@ module.exports = ClassExecuteLocal;
 
 // ----------------
 
-function initEvent (httpMethod, url, queryParams = {}, body = null) {
+function initEvent (httpMethod, url, queryParams, headers) {
   const event = Object.assign({}, baseEvent);
 
-  event.body = body;
   event.httpMethod = event.requestContext.httpMethod = httpMethod;
   event.resource = event.path = event.pathParameters.proxy = event.requestContext.path = url;
   event.queryStringParameters = queryParams;
   event.requestContext.requestTimeEpoch = new Date().getTime();
+  event.headers = Object.assign({}, event.headers, headers);
 
   return event;
 }

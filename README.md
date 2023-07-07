@@ -469,6 +469,8 @@ Prepared parameters are marked using ?
 
 ## Release
 
+* 2023-07-07:
+  * Added setHeaders() to Lambda runner
 * 2023-06-06:
   * Updated DB params
 * 2023-05-01:
