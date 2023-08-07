@@ -309,7 +309,7 @@ module.exports = class SqlSelectBuilder extends require('./Builder') {
       for (let x = 0; x < query.order.length; x++) {
         const colOrderIndex = Number(query.order[x].column);
         if (colOrderIndex >= 0 && 'orderable' in query.columns[colOrderIndex] && (query.columns[colOrderIndex].orderable === 'true' || query.columns[colOrderIndex].orderable === true)) {
-          const colOrderName = getColumnName(query.columns[colOrderIndex]);
+          const colOrderName = getSearchColumnName(query.columns[colOrderIndex]);
           orderByStmt.push(`${colOrderName} ${(query.order[x].dir === 'asc') ? 'asc' : 'desc'}`);
         }
       }
@@ -384,6 +384,16 @@ function getColumnName (column) {
     return column.data;
   }
 }
+
+
+function getSearchColumnName (column) {
+  if ( 'orderbyColumn' in column ) {
+    return column.orderbyColumn;
+  } else {
+    return getColumnName(column);
+  }
+}
+
 
 function getLimit (pageSize, page) {
   if (pageSize === -1) {

@@ -410,9 +410,10 @@ where query is of the following structure
   selectColumns : ""        <- comma separated of columns that are to be turned; overrides columns
   columns:[
     {
-      data: ""              <- name of the column
-      searchable: "true",   <- if this column is searchable
-      orderable: "true",    <- if this column can be orderable
+      data: ""                      <- name of the column
+      searchable: "true",           <- if this column is searchable
+      orderable: "true",            <- if this column can be orderable
+      orderbyColumn: "columnName",  <- Use this column for the ORDERBY instead
     }
   ],
   order:[
