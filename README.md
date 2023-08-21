@@ -125,12 +125,18 @@ await s3.move(s3Bucket, oldKey, newKey);
 await s3.delete(s3Bucket, key);
 
 await s3.put(s3Bucket, s3Key, fileBody, contentType = null, tagging = null);
+await s3.putSSEC(s3Bucket, s3Key, encKey, fileBody, contentType = null, tagging = null);
+
 await s3.putFile(s3Bucket, s3Key, filePath, contentType = null, tagging = null);
 
 const fileBody = await s3.getAsBytes(s3Bucket, s3Key);
+const fileBody = await s3.getAsBytesSSEC(s3Bucket, s3Key);
+
 const fileBody = await s3.getAsString(s3Bucket, s3Key);
+const fileBody = await s3.getAsStringSSEC(s3Bucket, s3Key, encKey);
 
 const signedUrl = await s3.generateSignedUrl(s3Bucket, s3Key, fileName, expiresInSecs);
+const signedUrl = await s3.generateSignedUrSSEC(s3Bucket, s3Key, encKey, fileName, expiresInSecs);
 ```
 
 ## API APP
@@ -470,6 +476,8 @@ Prepared parameters are marked using ?
 
 ## Release
 
+* 2023-08-21:
+  * S3 support for SSEC encryption
 * 2023-07-07:
   * Added setHeaders() to Lambda runner
 * 2023-06-06:

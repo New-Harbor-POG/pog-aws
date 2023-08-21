@@ -3,11 +3,15 @@
  *
  * https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/clients/client-s3/globals.html
  * https://docs.aws.amazon.com/sdk-for-javascript/v3/developer-guide/s3-examples.html
+ * https://docs.aws.amazon.com/AmazonS3/latest/userguide/ServerSideEncryptionCustomerKeys.html
+ *
+ * https://stackoverflow.com/questions/43361409/getting-signed-url-from-s3-to-decrypt-uploaded-object-using-sse-c
  */
 
 const { S3Client, ListObjectsV2Command, CopyObjectCommand, DeleteObjectCommand, PutObjectCommand, GetObjectCommand } = require('@aws-sdk/client-s3');
 const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
 const fs = require('fs');
+const crypto = require('crypto');
 
 module.exports = {
   list: async function (s3Bucket, prefix = null) {
@@ -67,11 +71,20 @@ module.exports = {
   },
 
   putFile: async function (s3Bucket, s3Key, filePath, contentType = null, tagging = null) {
+    return this.putFileSSEC(s3Bucket, s3Key, null, filePath, contentType, tagging);
+  },
+
+  putFileSSEC: async function (s3Bucket, s3Key, encKey, filePath, contentType = null, tagging = null) {
     const config = {
       Bucket: s3Bucket,
       Key: s3Key,
       Body: fs.readFileSync(filePath)
     };
+
+    if (encKey !== null) {
+      config.SSECustomerAlgorithm = 'AES256';
+      config.SSECustomerKey = Buffer.alloc(32, encKey);
+    }
 
     if (contentType != null) {
       config.ContentType = contentType;
@@ -87,11 +100,20 @@ module.exports = {
   },
 
   put: async function (s3Bucket, s3Key, fileBody, contentType = null, tagging = null) {
+    return await this.putSSEC(s3Bucket, s3Key, null, fileBody, contentType, tagging);
+  },
+
+  putSSEC: async function (s3Bucket, s3Key, encKey, fileBody, contentType = null, tagging = null) {
     const config = {
       Bucket: s3Bucket,
       Key: s3Key,
       Body: fileBody
     };
+
+    if (encKey !== null) {
+      config.SSECustomerAlgorithm = 'AES256';
+      config.SSECustomerKey = Buffer.alloc(32, encKey);
+    }
 
     if (contentType != null) {
       config.ContentType = contentType;
@@ -107,33 +129,71 @@ module.exports = {
   },
 
   getAsBytes: async function (s3Bucket, s3Key) {
-    const client = new S3Client();
-    const response = await client.send(new GetObjectCommand({
+    return await this.getAsBytesSSEC(s3Bucket, s3Key, null);
+  },
+
+  getAsBytesSSEC: async function (s3Bucket, s3Key, encKey) {
+    const config = {
       Bucket: s3Bucket,
       Key: s3Key
-    }));
+    };
+
+    if (encKey !== null) {
+      config.SSECustomerAlgorithm = 'AES256';
+      config.SSECustomerKey = Buffer.alloc(32, encKey);
+    }
+
+    const client = new S3Client();
+    const response = await client.send(new GetObjectCommand(config));
     return await response.Body.transformToByteArray();
   },
 
   getAsString: async function (s3Bucket, s3Key) {
-    const client = new S3Client();
-    const response = await client.send(new GetObjectCommand({
+    return await this.getAsStringSSEC(s3Bucket, s3Key, null);
+  },
+
+  getAsStringSSEC: async function (s3Bucket, s3Key, encKey = null) {
+    const config = {
       Bucket: s3Bucket,
       Key: s3Key
-    }));
+    };
+
+    if (encKey !== null) {
+      config.SSECustomerAlgorithm = 'AES256';
+      config.SSECustomerKey = Buffer.alloc(32, encKey);
+    }
+
+    const client = new S3Client();
+    const response = await client.send(new GetObjectCommand(config));
     return await response.Body.transformToString();
   },
 
-  generateSignedUrl: async function (s3Bucket, s3Key, fileName, expiresInSecs = 3600) {
-    const client = new S3Client();
-    const command = new GetObjectCommand({
+  generateSignedUrl: async function (s3Bucket, s3Key, fileName = null, expiresInSecs = 3600) {
+    return await this.generateSignedUrSSEC(s3Bucket, s3Key, null, fileName, expiresInSecs).url;
+  },
+
+  generateSignedUrSSEC: async function (s3Bucket, s3Key, encKey, fileName, expiresInSecs = 3600) {
+    const config = {
       Bucket: s3Bucket,
-      Key: s3Key,
-      ResponseContentDisposition: `attachment; filename ="${fileName}"`
-    });
+      Key: s3Key
+    };
+
+    if (fileName != null) {
+      config.ResponseContentDisposition = `attachment; filename ="${fileName}"`;
+    }
+
+    if (encKey !== null) {
+      config.SSECustomerAlgorithm = 'AES256';
+    }
+
+    const client = new S3Client();
+    const command = new GetObjectCommand(config);
 
     const url = await getSignedUrl(client, command, { expiresIn: expiresInSecs });
-    return url;
+    return {
+      url,
+      encKey: crypto.createHash('sha256').update(encKey, 'utf8').digest('base64')
+    };
   }
 }
 ;
