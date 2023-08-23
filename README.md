@@ -111,6 +111,19 @@ console.log( inEmail.getSubject() );
 
 const inEmail = await email.getFromText(mailContentString);
 console.log( inEmail.getSubject() );
+
+// or
+
+await email.send({
+  to: [],
+  cc: [],
+  bcc: [],
+  from: '',
+  dropIns: {},
+  subject: '',
+  htmlBody: '',
+  textBody: ''
+})
 ```
 
 ## S3
@@ -137,6 +150,9 @@ const fileBody = await s3.getAsStringSSEC(s3Bucket, s3Key, encKey);
 
 const signedUrl = await s3.generateSignedUrl(s3Bucket, s3Key, fileName, expiresInSecs);
 const signedUrl = await s3.generateSignedUrSSEC(s3Bucket, s3Key, encKey, fileName, expiresInSecs);
+
+const signedUrl = await s3.generatePutSignedUrl(s3Bucket, s3Key, contentType, expiresInSecs);
+const signedUrl = await s3.generatePutSignedUrlSSEC(s3Bucket, s3Key, encKey, contentType, expiresInSecs);
 ```
 
 ## API APP
@@ -476,6 +492,9 @@ Prepared parameters are marked using ?
 
 ## Release
 
+* 2023-08-23:
+  * S3 getSignedPutUrl
+  * SES .send( email )
 * 2023-08-21:
   * S3 support for SSEC encryption
 * 2023-07-07:

@@ -14,6 +14,83 @@ const Mustache = require('mustache');
 module.exports = {
 
   /**
+   * email : {
+   *  to: [],
+   *  cc: [],
+   *  bcc: [],
+   *  from: '',
+   *  dropIns: {},
+   *  subject: '',
+   *  htmlBody: '',
+   *  textBody: ''
+   * }
+   */
+  send: async function (email) {
+    email.to = Array.isArray(email.to) ? email.to : [email.to];
+
+    email.cc = 'cc' in email ? email.cc : [];
+    email.cc = Array.isArray(email.cc) ? email.cc : [email.cc];
+
+    email.bcc = 'bcc' in email ? email.bcc : [];
+    email.bcc = Array.isArray(email.bcc) ? email.bcc : [email.bcc];
+
+    if (email.dropIns != null && typeof email.dropIns === 'object') {
+      email.htmlBody = Mustache.render(email.htmlBody, email.dropIns);
+      email.subject = Mustache.render(email.subject, email.dropIns);
+    }
+
+    //
+    // Set the SES Parameters
+    const sesParams = {
+      Source: email.from,
+      Destination: {
+        ToAddresses: email.to,
+        CcAddresses: email.cc,
+        BccAddresses: email.bcc
+      },
+      Message: {
+        Body: {
+          Html: {
+            Charset: 'UTF-8',
+            Data: email.htmlBody
+          }
+        },
+        Subject: {
+          Charset: 'UTF-8',
+          Data: email.subject
+        }
+      }
+    };
+
+    //
+    // Add in the text body if available
+    if ('textBody' in email && email.textBody !== null) {
+      if (email.dropIns != null && typeof email.dropIns === 'object') {
+        email.textBody = Mustache.render(email.textBody, email.dropIns);
+      }
+
+      sesParams.Message.Body.Text = {
+        Charset: 'UTF-8',
+        Data: email.textBody
+      };
+    }
+
+    try {
+      const client = new SESClient();
+      const command = new SendEmailCommand(sesParams);
+      const sesId = await client.send(command);
+      if (sesId.MessageId) {
+        email.messageId = sesId.MessageId;
+      }
+
+      return email;
+    } catch (e) {
+      console.error(`send(to=${email.to}; cc=${email.cc}; bcc=${email.bcc}; ${e}`);
+      throw e;
+    }
+  },
+
+  /**
    * Sends an email using only the HTML field
    */
   sendHtml: async function (fromEmail, toEmail, subject, htmlBody, dropIns = null) {

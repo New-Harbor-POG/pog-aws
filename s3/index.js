@@ -194,6 +194,32 @@ module.exports = {
       url,
       encKey: crypto.createHash('sha256').update(encKey, 'utf8').digest('base64')
     };
+  },
+
+  generatePutSignedUrl: async function (s3Bucket, s3Key, contentType, expiresInSecs = 3600) {
+    return await this.generatePutSignedUrSSEC(s3Bucket, s3Key, contentType, null, expiresInSecs).url;
+  },
+
+  generatePutSignedUrSSEC: async function (s3Bucket, s3Key, contentType, encKey, expiresInSecs = 3600) {
+    const config = {
+      Bucket: s3Bucket,
+      Key: s3Key,
+      ContentType: contentType
+    };
+
+    if (encKey !== null) {
+      config.SSECustomerAlgorithm = 'AES256';
+    }
+
+    const client = new S3Client();
+    const command = new PutObjectCommand(config);
+
+    const url = await getSignedUrl(client, command, { expiresIn: expiresInSecs });
+    return {
+      url,
+      encKey: crypto.createHash('sha256').update(encKey, 'utf8').digest('base64')
+    };
   }
+
 }
 ;
