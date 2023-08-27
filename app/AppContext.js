@@ -5,7 +5,7 @@ module.exports = class AppContext {
   constructor (app) {
     this.app = app;
     this.ip = this.userAgent = null;
-    this.dbRW = this.dbRO = null;
+    this.dataPool = {};
   }
 
   async getSSMParam (param, decodeFromJson = true) {
@@ -19,10 +19,10 @@ module.exports = class AppContext {
   }
 
   async getDatabase (profile, readOnly = false) {
-    const propKey = readOnly ? 'dbRO' : 'dbRW';
+    const poolKey = `${profile}-${readOnly}`;
 
-    if (this[propKey] != null) {
-      return this[propKey];
+    if (poolKey in this.dataPool && this.dataPool[poolKey] != null) {
+      return this.dataPool[poolKey];
     }
 
     const param = await this.app.getSSMParam(profile);
@@ -37,28 +37,27 @@ module.exports = class AppContext {
     }
 
     if ('type' in config && config.type.toLowerCase() === 'mysql') {
-      this[propKey] = new (require('../database/mysql'))();
-      await this[propKey].create(config);
-      return this[propKey];
+      this.dataPool[poolKey] = new (require('../database/mysql'))();
+      await this.dataPool[poolKey].create(config);
+      return this.dataPool[poolKey];
     } else if ('type' in config && config.type.toLowerCase() === 'postgres') {
-      this[propKey] = new (require('../database/postgres'))();
-      await this[propKey].create(config);
-      return this[propKey];
+      this.dataPool[poolKey] = new (require('../database/postgres'))();
+      await this.dataPool[poolKey].create(config);
+      return this.dataPool[poolKey];
     } else {
       return require('../utils/Throw').fatal(`SSM Parameter for ${config.type} not defined or supported`);
     }
   }
 
   async close () {
-    if (this.dbRW != null) {
-      await this.dbRW.destroy();
-      this.dbRW = null;
+    for (const poolKey in this.dataPool) {
+      await this.dataPool[poolKey].destroy();
     }
+    this.dataPool = {};
+  }
 
-    if (this.dbRO != null) {
-      await this.dbRO.destroy();
-      this.dbRO = null;
-    }
+  clearDefinitions () {
+    new (require('../database/postgres'))().clearDefintions();
   }
 }
 ;

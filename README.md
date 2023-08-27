@@ -492,6 +492,8 @@ Prepared parameters are marked using ?
 
 ## Release
 
+* 2023-08-27:
+  * Updated AppContext to support multiple concurrent databases
 * 2023-08-23:
   * S3 getSignedPutUrl
   * SES .send( email )

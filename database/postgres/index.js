@@ -1,7 +1,7 @@
 const { Client } = require('pg');
 
-const schemaDef = {};
-const oidDef = {};
+let globalSchemaDef = {};
+let globalOidDef = {};
 
 /**
  *
@@ -33,17 +33,17 @@ module.exports = class Postgres extends require('./WrapBase') {
   // ----------------------
 
   async initSchema (schema) {
-    if (this.pgClient.database in oidDef) {
+    if (this.pgClient.database in globalOidDef) {
       return;
     }
 
     const schemaPts = schema.split(',');
-    if (!(schemaPts[0] in schemaDef)) {
+    if (!(schemaPts[0] in globalSchemaDef)) {
       const d = new (require('./Definition'))(schema);
       await d.load(this.pgClient);
 
       for (const schema of schemaPts) {
-        schemaDef[schema] = d;
+        globalSchemaDef[schema] = d;
       }
 
       if (this.logStat) {
@@ -51,9 +51,9 @@ module.exports = class Postgres extends require('./WrapBase') {
       }
     }
 
-    if (!(this.pgClient.database in oidDef)) {
-      oidDef[this.pgClient.database] = new (require('./OidLookup'))(schema);
-      await oidDef[this.pgClient.database].load(this.pgClient);
+    if (!(this.pgClient.database in globalOidDef)) {
+      globalOidDef[this.pgClient.database] = new (require('./OidLookup'))(schema);
+      await globalOidDef[this.pgClient.database].load(this.pgClient);
 
       if (this.logStat) {
         console.log(`mgsql.oid.load(${this.pgClient.database} ¬ ${schema})`);
@@ -70,7 +70,12 @@ module.exports = class Postgres extends require('./WrapBase') {
   // ----------------------
 
   getDefinition (schema, table) {
-    return schemaDef[schema].getTable(schema, table);
+    return globalSchemaDef[schema].getTable(schema, table);
+  }
+
+  clearDefintions () {
+    globalSchemaDef = {};
+    globalOidDef = {};
   }
 
   log (_on) {
@@ -85,7 +90,7 @@ module.exports = class Postgres extends require('./WrapBase') {
     if (this.logStat) {
       console.log(`mgsql.oid.free(${this.pgClient.database})`);
     }
-    delete oidDef[this.pgClient.database];
+    delete globalOidDef[this.pgClient.database];
   }
 
   async destroy () {
@@ -182,12 +187,12 @@ module.exports = class Postgres extends require('./WrapBase') {
 
   async insert (schemaTable, tableData, ignoreDuplicate = false) {
     const schema = schemaTable.split('.')[0];
-    if (!(schema in schemaDef)) {
+    if (!(schema in globalSchemaDef)) {
       throw new Error(`[-] ${schema} is not loaded`);
     }
 
     const table = schemaTable.split('.')[1];
-    const tableDef = schemaDef[schema].getTable(schema, table);
+    const tableDef = globalSchemaDef[schema].getTable(schema, table);
     if (tableDef == null) {
       throw new Error(`[-] Unknown table ${schema}.${table}`);
     }
@@ -227,12 +232,12 @@ module.exports = class Postgres extends require('./WrapBase') {
    */
   async update (schemaTable, tableData) {
     const schema = schemaTable.split('.')[0];
-    if (!(schema in schemaDef)) {
+    if (!(schema in globalSchemaDef)) {
       throw new Error(`[-] ${schema} is not loaded`);
     }
 
     const table = schemaTable.split('.')[1];
-    const tableDef = schemaDef[schema].getTable(schema, table);
+    const tableDef = globalSchemaDef[schema].getTable(schema, table);
     if (tableDef == null) {
       throw new Error(`[-] Unknown table ${schema}.${table}`);
     }
@@ -289,12 +294,12 @@ function transformUpdateReturn (qResult) {
 // ------------------------------
 
 function remapRowsWithAlias (database, qResult) {
-  if (!(database in oidDef)) {
+  if (!(database in globalOidDef)) {
     return qResult;
   }
 
   // Determine the fieldnames
-  const oidLookup = oidDef[database];
+  const oidLookup = globalOidDef[database];
 
   const fieldNames = [];
   for (const field of qResult.fields) {
