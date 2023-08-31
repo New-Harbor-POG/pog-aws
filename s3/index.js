@@ -197,7 +197,8 @@ module.exports = {
   },
 
   generatePutSignedUrl: async function (s3Bucket, s3Key, contentType, expiresInSecs = 3600) {
-    return await this.generatePutSignedUrSSEC(s3Bucket, s3Key, contentType, null, expiresInSecs).url;
+    const signed = await this.generatePutSignedUrSSEC(s3Bucket, s3Key, contentType, null, expiresInSecs);
+    return signed.url;
   },
 
   generatePutSignedUrSSEC: async function (s3Bucket, s3Key, contentType, encKey, expiresInSecs = 3600) {
