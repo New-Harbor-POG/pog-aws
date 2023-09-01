@@ -492,6 +492,8 @@ Prepared parameters are marked using ?
 
 ## Release
 
+* 2023-09-01:
+  * Fixed local Lambda call
 * 2023-08-31:
   * Fixed signed call
 * 2023-08-27:

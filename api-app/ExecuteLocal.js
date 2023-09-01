@@ -92,8 +92,12 @@ class ClassExecuteLocal {
     const res = await this.handler.do(event, this.context);
 
     if ('statusCode' in res && res.statusCode === 200) {
-      const isJson = (res.body.startsWith('{') && res.body.endsWith('}')) || (res.body.startsWith('[') && res.body.endsWith(']'));
-      res.body = 'body' in res && isJson ? JSON.parse(res.body) : null;
+      if ('body' in res) {
+        const isJson = (res.body.startsWith('{') && res.body.endsWith('}')) || (res.body.startsWith('[') && res.body.endsWith(']'));
+        res.body = isJson ? JSON.parse(res.body) : res.body;
+      } else {
+        res.body = null;
+      }
     }
 
     return res;
