@@ -169,7 +169,8 @@ module.exports = {
   },
 
   generateSignedUrl: async function (s3Bucket, s3Key, fileName = null, expiresInSecs = 3600) {
-    return await this.generateSignedUrSSEC(s3Bucket, s3Key, null, fileName, expiresInSecs).url;
+    const signed = await this.generateSignedUrSSEC(s3Bucket, s3Key, null, fileName, expiresInSecs);
+    return signed.url;
   },
 
   generateSignedUrSSEC: async function (s3Bucket, s3Key, encKey, fileName, expiresInSecs = 3600) {
@@ -192,7 +193,7 @@ module.exports = {
     const url = await getSignedUrl(client, command, { expiresIn: expiresInSecs });
     return {
       url,
-      encKey: crypto.createHash('sha256').update(encKey, 'utf8').digest('base64')
+      encKey: encKey !== null ? crypto.createHash('sha256').update(encKey, 'utf8').digest('base64') : null
     };
   },
 
@@ -218,7 +219,7 @@ module.exports = {
     const url = await getSignedUrl(client, command, { expiresIn: expiresInSecs });
     return {
       url,
-      encKey: crypto.createHash('sha256').update(encKey, 'utf8').digest('base64')
+      encKey: encKey !== null ? crypto.createHash('sha256').update(encKey, 'utf8').digest('base64') : null
     };
   }
 
