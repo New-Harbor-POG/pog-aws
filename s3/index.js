@@ -185,6 +185,7 @@ module.exports = {
 
     if (encKey !== null) {
       config.SSECustomerAlgorithm = 'AES256';
+      config.SSECustomerKey = Buffer.alloc(32, encKey);
     }
 
     const client = new S3Client();
@@ -193,8 +194,8 @@ module.exports = {
     const url = await getSignedUrl(client, command, { expiresIn: expiresInSecs });
     return {
       url,
-      encKey: encKey !== null ? crypto.createHash('sha256').update(encKey, 'utf8').digest('base64') : null,
-      md5Key: encKey !== null ? crypto.createHash('md5').update(encKey, 'utf8').digest('base64') : null
+      encKey: encKey !== null ? Buffer.alloc(32, encKey).toString('base64') : null,
+      md5Key: encKey !== null ? crypto.createHash('md5').update(Buffer.alloc(32, encKey), 'utf8').digest('base64') : null
     };
   },
 
@@ -220,8 +221,8 @@ module.exports = {
     const url = await getSignedUrl(client, command, { expiresIn: expiresInSecs });
     return {
       url,
-      encKey: encKey !== null ? crypto.createHash('sha256').update(encKey, 'utf8').digest('base64') : null,
-      md5Key: encKey !== null ? crypto.createHash('md5').update(encKey, 'utf8').digest('base64') : null
+      encKey: encKey !== null ? Buffer.alloc(32, encKey).toString('base64') : null,
+      md5Key: encKey !== null ? crypto.createHash('md5').update(Buffer.alloc(32, encKey), 'utf8').digest('base64') : null
     };
   }
 
