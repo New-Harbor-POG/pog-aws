@@ -492,6 +492,8 @@ Prepared parameters are marked using ?
 
 ## Release
 
+* 2023-09-27:
+  * Fixed S3 function name; added MD5
 * 2023-09-01:
   * Fixed local Lambda call
 * 2023-08-31:

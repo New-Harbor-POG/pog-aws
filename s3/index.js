@@ -169,11 +169,11 @@ module.exports = {
   },
 
   generateSignedUrl: async function (s3Bucket, s3Key, fileName = null, expiresInSecs = 3600) {
-    const signed = await this.generateSignedUrSSEC(s3Bucket, s3Key, null, fileName, expiresInSecs);
+    const signed = await this.generateSignedUrlSSEC(s3Bucket, s3Key, null, fileName, expiresInSecs);
     return signed.url;
   },
 
-  generateSignedUrSSEC: async function (s3Bucket, s3Key, encKey, fileName, expiresInSecs = 3600) {
+  generateSignedUrlSSEC: async function (s3Bucket, s3Key, encKey, fileName, expiresInSecs = 3600) {
     const config = {
       Bucket: s3Bucket,
       Key: s3Key
@@ -193,16 +193,17 @@ module.exports = {
     const url = await getSignedUrl(client, command, { expiresIn: expiresInSecs });
     return {
       url,
-      encKey: encKey !== null ? crypto.createHash('sha256').update(encKey, 'utf8').digest('base64') : null
+      encKey: encKey !== null ? crypto.createHash('sha256').update(encKey, 'utf8').digest('base64') : null,
+      md5Key: encKey !== null ? crypto.createHash('md5').update(encKey, 'utf8').digest('base64') : null
     };
   },
 
   generatePutSignedUrl: async function (s3Bucket, s3Key, contentType, expiresInSecs = 3600) {
-    const signed = await this.generatePutSignedUrSSEC(s3Bucket, s3Key, contentType, null, expiresInSecs);
+    const signed = await this.generatePutSignedUrlSSEC(s3Bucket, s3Key, contentType, null, expiresInSecs);
     return signed.url;
   },
 
-  generatePutSignedUrSSEC: async function (s3Bucket, s3Key, contentType, encKey, expiresInSecs = 3600) {
+  generatePutSignedUrlSSEC: async function (s3Bucket, s3Key, contentType, encKey, expiresInSecs = 3600) {
     const config = {
       Bucket: s3Bucket,
       Key: s3Key,
@@ -219,7 +220,8 @@ module.exports = {
     const url = await getSignedUrl(client, command, { expiresIn: expiresInSecs });
     return {
       url,
-      encKey: encKey !== null ? crypto.createHash('sha256').update(encKey, 'utf8').digest('base64') : null
+      encKey: encKey !== null ? crypto.createHash('sha256').update(encKey, 'utf8').digest('base64') : null,
+      md5Key: encKey !== null ? crypto.createHash('md5').update(encKey, 'utf8').digest('base64') : null
     };
   }
 
