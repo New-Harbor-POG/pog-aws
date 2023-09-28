@@ -173,7 +173,7 @@ module.exports = {
     return signed.url;
   },
 
-  generateSignedUrlSSEC: async function (s3Bucket, s3Key, encKey, fileName, expiresInSecs = 3600) {
+  generateSignedUrlSSEC: async function (s3Bucket, s3Key, encKey, fileName = null, expiresInSecs = 3600) {
     const config = {
       Bucket: s3Bucket,
       Key: s3Key
@@ -185,7 +185,6 @@ module.exports = {
 
     if (encKey !== null) {
       config.SSECustomerAlgorithm = 'AES256';
-      config.SSECustomerKey = Buffer.alloc(32, encKey);
     }
 
     const client = new S3Client();

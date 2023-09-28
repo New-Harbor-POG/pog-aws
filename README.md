@@ -491,7 +491,6 @@ Given the way Postgresql works with aliasing, this library, for all ```.select/.
 Prepared parameters are marked using ?
 
 ## Release
-
 * 2023-09-27:
   * Fixed S3 function name; added MD5
 * 2023-09-01:
